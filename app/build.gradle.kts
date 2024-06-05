@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+
+    // plugin parcelable
+    id("kotlin-parcelize")
 }
 
 android {
@@ -24,12 +27,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField ("string", "GITHUB_API_TOKEN", "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")
-            buildConfigField("string", "BASE_URL", "https://api.github.com/")
+            buildConfigField ("String", "GITHUB_API_TOKEN", "\"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\"")
+            buildConfigField("String", "BASE_URL", "\"https://api.github.com/\"")
         }
         debug {
-            buildConfigField("string", "GITHUB_API_TOKEN", "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")
-            buildConfigField("string", "BASE_URL", "https://api.github.com")
+            buildConfigField ("String", "GITHUB_API_TOKEN", "\"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\"")
+            buildConfigField("String", "BASE_URL", "\"https://api.github.com/\"")
         }
     }
 
@@ -55,6 +58,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.cronet.embedded)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -68,7 +72,11 @@ dependencies {
     // viewPager2 dependencies
     implementation(libs.androidx.viewpager2)
 
-    // viewModel dependendencies
+    // viewModel & liveData dependencies
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.activity.ktx)
+
+    // fragment dependencies
+    implementation(libs.androidx.fragment.ktx)
 }

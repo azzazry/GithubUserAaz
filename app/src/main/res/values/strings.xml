@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">GithubUserAaz</string>
+    <string name="avatar">avatar</string>
+    <string name="username">Username</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="name">Name</string>
+    <string name="default_followers">Followers</string>
+    <string name="default_following">Following</string>
+    <string name="no_data_available">No data available</string>
+    <string name="input_name">Masukan nama user</string>
+    <string name="input_user">Masukan nama user</string>
 </resources>
