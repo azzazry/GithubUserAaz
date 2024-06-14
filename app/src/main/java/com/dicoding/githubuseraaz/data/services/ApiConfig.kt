@@ -1,4 +1,4 @@
-package com.dicoding.githubuseraaz.data.retrofit
+package com.dicoding.githubuseraaz.data.services
 
 import com.dicoding.githubuseraaz.BuildConfig
 import okhttp3.OkHttpClient
@@ -7,31 +7,28 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiConfig {
-    private val baseUrl = BuildConfig.BASE_URL
+    private const val BASE_URL = BuildConfig.BASE_URL
     private val debug = BuildConfig.DEBUG
-    private val githubApi = BuildConfig.GITHUB_API_TOKEN
+    private const val GITHUB_API = BuildConfig.GITHUB_API_TOKEN
     fun getApiService(): ApiService {
-        // loggingHttpInterceptor
         val loggingInterceptor = if (debug){
             HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
         } else {
             HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
         }
 
-        // client variable
         val client = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .addInterceptor{chain ->
                 val newRequest = chain.request().newBuilder()
-                    .addHeader("Authorization", " token $githubApi")
+                    .addHeader("Authorization", " token $GITHUB_API")
                     .build()
                 chain.proceed(newRequest)
             }
             .build()
 
-        // retrofit
         val retrofit = Retrofit.Builder()
-            .baseUrl(baseUrl)
+            .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()

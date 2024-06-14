@@ -1,17 +1,18 @@
-package com.dicoding.githubuseraaz.ui.viewmodel
+package com.dicoding.githubuseraaz.ui.follow
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dicoding.githubuseraaz.data.response.ItemsItem
-import com.dicoding.githubuseraaz.data.retrofit.UserObject
+import com.dicoding.githubuseraaz.data.services.UserObject
 
-class FollowViewModel(private val userRepo: UserObject): ViewModel() {
+class FollowViewModel(private val userRepository: UserObject) : ViewModel() {
+
     constructor() : this(UserObject) {
     }
 
-    private val _followList = MutableLiveData<List<ItemsItem>?>()
-    val followList: LiveData<List<ItemsItem>?> get() = _followList
+    private val _followList = MutableLiveData<List<ItemsItem>>()
+    val followList: LiveData<List<ItemsItem>> get() = _followList
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
@@ -21,10 +22,10 @@ class FollowViewModel(private val userRepo: UserObject): ViewModel() {
 
     fun fetchFollowers(username: String) {
         _isLoading.postValue(true)
-        UserObject.getFollowers(username) { users, error ->
+        userRepository.getFollowers(username) { users, error ->
             _isLoading.postValue(false)
             if (error != null) {
-                _errorMessage.postValue("Gagal memuat daftar pengguna : $error")
+                _errorMessage.postValue("Gagal memuat daftar pengguna yang diikuti: $error")
             } else {
                 _followList.postValue(users)
             }
@@ -33,10 +34,10 @@ class FollowViewModel(private val userRepo: UserObject): ViewModel() {
 
     fun fetchFollowing(username: String) {
         _isLoading.postValue(true)
-        UserObject.getFollowing(username) { users, error ->
+        userRepository.getFollowing(username) { users, error ->
             _isLoading.postValue(false)
             if (error != null) {
-                _errorMessage.postValue("Gagal memuat daftar pengguna: $error")
+                _errorMessage.postValue("Gagal memuat daftar pengguna yang diikuti: $error")
             } else {
                 _followList.postValue(users)
             }
@@ -45,9 +46,11 @@ class FollowViewModel(private val userRepo: UserObject): ViewModel() {
 
     private fun fetchUsers(username: String, callback: (List<ItemsItem>?, String?) -> Unit) {
         _isLoading.postValue(true)
-        UserObject.getFollowers(username) { users, error ->
+        userRepository.getFollowers(username) { users, error ->
             _isLoading.postValue(false)
             callback(users, error)
         }
     }
+
+
 }

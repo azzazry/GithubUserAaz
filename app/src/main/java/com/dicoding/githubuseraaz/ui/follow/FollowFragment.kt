@@ -1,6 +1,5 @@
-package com.dicoding.githubuseraaz.ui.fragment
+package com.dicoding.githubuseraaz.ui.follow
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,9 +9,8 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.githubuseraaz.adapter.UserAdapter
 import com.dicoding.githubuseraaz.data.response.ItemsItem
+import com.dicoding.githubuseraaz.data.response.ItemsResponse
 import com.dicoding.githubuseraaz.databinding.FragmentFollowBinding
-import com.dicoding.githubuseraaz.ui.activity.DetailUserActivity
-import com.dicoding.githubuseraaz.ui.viewmodel.FollowViewModel
 
 class FollowFragment : Fragment() {
 
@@ -24,7 +22,6 @@ class FollowFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         binding = FragmentFollowBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -37,29 +34,20 @@ class FollowFragment : Fragment() {
 
         adapter = UserAdapter(object : UserAdapter.OnUserClickListener{
             override fun onUserClick(user: ItemsItem) {
-                TODO("Not yet implemented")
             }
         })
 
         binding.rvFollowList.adapter = adapter
         binding.rvFollowList.layoutManager = LinearLayoutManager(requireContext())
 
-        if (tabPosition == 1) {
-            viewModel.fetchFollowers(username)
-        } else {
-            viewModel.fetchFollowing(username)
-        }
+        if (tabPosition == 1) viewModel.fetchFollowers(username) else viewModel.fetchFollowing(username)
 
-        viewModel.followList.observe(viewLifecycleOwner) {listUser ->
-            adapter.submitList(listUser)
+        viewModel.followList.observe(viewLifecycleOwner) {userList ->
+            adapter.submitList(userList)
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                binding.progressBar.visibility = View.VISIBLE
-            } else {
-                binding.progressBar.visibility = View.INVISIBLE
-            }
+            if (isLoading) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.INVISIBLE
         }
     }
 

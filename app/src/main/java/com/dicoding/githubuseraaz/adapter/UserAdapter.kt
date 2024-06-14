@@ -1,5 +1,6 @@
 package com.dicoding.githubuseraaz.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,8 @@ import com.dicoding.githubuseraaz.R
 import com.dicoding.githubuseraaz.data.response.ItemsItem
 import com.dicoding.githubuseraaz.databinding.ListUserBinding
 
-class UserAdapter(private val onUserClickListener: OnUserClickListener): ListAdapter<ItemsItem, UserAdapter.viewHolder>(DIFF_CALLBACK) {
+class UserAdapter(private val onUserClickListener: OnUserClickListener
+): ListAdapter<ItemsItem, UserAdapter.viewHolder>(DIFF_CALLBACK) {
     inner class viewHolder(binding: ListUserBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
         init {
             itemView.setOnClickListener(this)
@@ -41,7 +43,6 @@ class UserAdapter(private val onUserClickListener: OnUserClickListener): ListAda
 
     interface OnUserClickListener {
         fun onUserClick(user: ItemsItem)
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserAdapter.viewHolder {
@@ -59,6 +60,7 @@ class UserAdapter(private val onUserClickListener: OnUserClickListener): ListAda
             override fun areItemsTheSame(oldItem: ItemsItem, newItem: ItemsItem): Boolean {
                 return oldItem == newItem
             }
+            @SuppressLint("DiffUtilEquals")
             override fun areContentsTheSame(oldItem: ItemsItem, newItem: ItemsItem): Boolean {
                 return oldItem == newItem
             }

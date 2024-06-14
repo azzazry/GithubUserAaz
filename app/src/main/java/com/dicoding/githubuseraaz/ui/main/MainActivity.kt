@@ -1,28 +1,39 @@
-package com.dicoding.githubuseraaz.ui.activity
+package com.dicoding.githubuseraaz.ui.main
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.githubuseraaz.R
 import com.dicoding.githubuseraaz.adapter.UserAdapter
 import com.dicoding.githubuseraaz.data.response.ItemsItem
+import com.dicoding.githubuseraaz.data.response.ItemsResponse
 import com.dicoding.githubuseraaz.databinding.ActivityMainBinding
-import com.dicoding.githubuseraaz.ui.viewmodel.MainViewModel
+import com.dicoding.githubuseraaz.ui.detailuser.DetailUserActivity
+import com.dicoding.githubuseraaz.ui.favorite.FavoriteActivity
+import com.dicoding.githubuseraaz.ui.settings.SettingsActivity
+import com.dicoding.githubuseraaz.utils.SettingPreferences
+import com.dicoding.githubuseraaz.utils.dataStore
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), UserAdapter.OnUserClickListener {
 
-    lateinit var binding: ActivityMainBinding
-    lateinit var adapter: UserAdapter
-    private val viewModel: MainViewModel by viewModels()
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var adapter: UserAdapter
+    private lateinit var settingPreferences: SettingPreferences
+    private lateinit var viewModelFactory: MainViewModelFactory
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -34,9 +45,32 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnUserClickListener {
             insets
         }
 
+        settingPreferences = SettingPreferences.getInstance(applicationContext.dataStore)
+
+        lifecycleScope.launch {
+            settingPreferences.getThemeSetting().collect { isDarkModeActive ->
+                if (isDarkModeActive) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+            }
+        }
+        viewModelFactory = MainViewModelFactory(settingPreferences)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
         viewModel.userList.observe(this) { userList ->
             adapter.submitList(userList)
             binding.progressBar.visibility = View.GONE
+        }
+
+        binding.favoriteButton.setOnClickListener {
+            val intent = Intent(this, FavoriteActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.settingsButton.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
         }
 
         adapter = UserAdapter(this)
@@ -47,7 +81,7 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnUserClickListener {
 
         with(binding) {
             searchView.setupWithSearchBar(searchBar)
-            searchView.editText.setOnEditorActionListener { v, actionId, event ->
+            searchView.editText.setOnEditorActionListener { _, actionId, _ ->
                 searchBar.setText(searchView.text)
                 searchView.hide()
                 viewModel.setSearchQuery(searchView.text.toString())
@@ -60,7 +94,7 @@ class MainActivity : AppCompatActivity(), UserAdapter.OnUserClickListener {
     }
 
     private fun fetchData() {
-        viewModel.fetchData("asep")
+        viewModel.fetchData("a")
     }
 
     override fun onUserClick(user: ItemsItem) {

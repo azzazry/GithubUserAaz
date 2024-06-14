@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.dicoding.githubuseraaz.ui.fragment.FollowFragment
+import com.dicoding.githubuseraaz.ui.follow.FollowFragment
 
 class SectionsPagerAdapter(activity: AppCompatActivity, private val fragmentList: List<Fragment>, private val username: String): FragmentStateAdapter(activity){
     override fun createFragment(position: Int): Fragment {

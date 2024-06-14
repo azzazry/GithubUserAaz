@@ -1,9 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-
-    // plugin parcelable
     id("kotlin-parcelize")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -27,56 +26,73 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField ("String", "GITHUB_API_TOKEN", "\"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\"")
+            buildConfigField("String", "GITHUB_API_TOKEN", "\"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\"")
             buildConfigField("String", "BASE_URL", "\"https://api.github.com/\"")
         }
         debug {
-            buildConfigField ("String", "GITHUB_API_TOKEN", "\"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\"")
+            buildConfigField("String", "GITHUB_API_TOKEN", "\"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\"")
             buildConfigField("String", "BASE_URL", "\"https://api.github.com/\"")
         }
     }
 
-    // ViewBinding dan BuildConfig make those true
     buildFeatures {
         viewBinding = true
         buildConfig = true
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 }
 
 dependencies {
-
-    // default dependencies
+    // UI components
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.cronet.embedded)
+
+    // Image loading
+    implementation(libs.glide)
+
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    // networking dependencies
-    implementation(libs.glide)
+    // Retrofit for networking
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
 
-    // viewPager2 dependencies
+    // ViewPager2
     implementation(libs.androidx.viewpager2)
 
-    // viewModel & liveData dependencies
+    // Lifecycle and LiveData
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    // Fragment and Activity KTX
+    implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.activity.ktx)
 
-    // fragment dependencies
-    implementation(libs.androidx.fragment.ktx)
+    // Room for database
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
+    // DataStore for preferences
+    implementation(libs.androidx.datastore.preferences)
+
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+
+
 }
